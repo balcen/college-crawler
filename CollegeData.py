@@ -2,9 +2,12 @@ from bs4 import BeautifulSoup
 from admission import *
 from money import *
 from academic import *
+from campus import *
+from student import *
 import requests
 import json
 import time
+import pickle
 
 
 def get_build_id():
@@ -50,22 +53,21 @@ class CollegeData:
         start = time.time()
 
         for slug in self.slugs:
+            overview, admission, campus, money, academic, student = dict(), dict(), dict(), dict(), dict(), dict()
             num += 1
             print(slug)
-            overview = dict()
-            admission = dict()
-            campus = dict()
-            money = dict()
-            student = dict()
             # self.__set_overview(slug, overview, admission)
             # self.__set_admission(slug, admission)
             # self.__set_money(slug, money)
-            self.__set_academic(slug, money)
+            # self.__set_academic(slug, academic)
+            # self.__set_campus(slug, campus)
+            self.__set_student(slug, student)
             school.update({
                 slug: {
                     "overview": overview,
                     "admissions": admission,
                     "moneys": money,
+                    "academics": academic,
                     "campus": campus,
                     "students": student
                 }
@@ -76,6 +78,9 @@ class CollegeData:
         print("++++++++ API Total ++++++++")
         print(end - start)
         print("+++++++++++++++++++++++++++")
+
+        with open("obj/schools.pkl", "wb") as f:
+            pickle.dump(school, f, pickle.HIGHEST_PROTOCOL)
 
         return school
 
@@ -170,8 +175,35 @@ class CollegeData:
         res = requests.get(link)
         profile = json.loads(res.text)["pageProps"]["profile"]
 
+        for content in profile["bodyContent"]:
+            data = content["data"]
+            title = data["title"]
 
+            if title == "Location and Setting":
+                location_and_setting.set_format(data["children"], campus)
+            elif title == "Housing":
+                housing.set_format(data["children"], campus)
+            elif title == "Security":
+                security.set_format(data["children"], campus)
+            elif title == "Personal Support Services":
+                personal_support_services.set_format(data["children"], campus)
+            elif title == "Sports & Recreation":
+                sports_and_recreation.set_format(data["children"], campus)
 
+    def __set_student(self, slug, student):
+        link = f"https://www.collegedata.com/_next/data/{self.build_id}/college-search/{slug}/students.json"
+        print("---- Student ----")
+        print(link)
+        res = requests.get(link)
+        profile = json.loads(res.text)["pageProps"]["profile"]
 
-college = CollegeData()
-college.get_total_school_data()
+        for content in profile["bodyContent"]:
+            data = content["data"]
+            title = data["title"]
+
+            if title == "Student Body":
+                student_body.set_format(data["children"], student)
+            elif "Undergraduate Retention" in title:
+                undergraduate_retention_and_graduation.set_format(data["children"], student)
+            elif "After Graduation":
+                after_graduation.set_format(data["children"], student)

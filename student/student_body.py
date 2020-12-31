@@ -33,9 +33,10 @@ def set_format(children_data, student):
                         "intl_countries_count": c
                     })
             elif title == "Average Age":
-                student.update({
-                    "avg_age": int(round(float(data["value"][0])))
-                })
+                if "Not" not in data["value"][0] and data["value"][0]:
+                    student.update({
+                        "avg_age": int(round(float(data["value"][0])))
+                    })
             elif title == "All Graduate Students":
                 if "Not" not in data["value"][0]:
                     student.update({
@@ -47,9 +48,9 @@ def set_format(children_data, student):
             title = top["title"]
 
             if title == "All Undergraduates":
-                if "Not" in top["value"][0]:
+                if "Not" not in top["value"][0]:
                     student.update({
-                        "undergrad_count": int(top["value"].replace(",", ""))
+                        "undergrad_count": int(top["value"][0].replace(",", ""))
                     })
 
                 for e in data["children"]:

@@ -1,36 +1,33 @@
-from connect import *
 from CollegeData import CollegeData
 from database import *
+import file
 import time
-import pickle
-
-
-def load_file():
-    with open("obj/schools.pkl", "rb") as f:
-        return pickle.load(f)
 
 
 def init_db(args=None):
     if args is None:
+        init("schools")
         init("admissions")
         init("academics")
         init("campus")
         init("moneys")
+        init("students")
     else:
         for arg in args:
             init(arg)
 
 
-def init_data(school_id,data):
+def init_data(school_id, data):
     inited_data = {k: v for k, v in data.items() if k and k.strip()}
     inited_data.update({"school_id": school_id})
     return inited_data
 
 
 def insert_data(data, args=None):
-    init_data(args)
+    init_db(args)
     for slug, school in data.items():
         school_id = insert("schools", school["overview"])
+        init_data(school_id, school)
 
         if args is None:
             insert("admissions", init_data(school_id, school["admissions"]))
@@ -52,8 +49,9 @@ try:
     if "crawler" in input_string:
         college = CollegeData()
         schools = college.get_total_school_data()
+        file.store(schools)
     else:
-        schools = load_file()
+        schools = file.read()
 
     if "insert" in input_string:
         tables = ["admissions", "academics", "campus", "moneys", "students"]

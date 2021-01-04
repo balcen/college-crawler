@@ -56,11 +56,11 @@ class CollegeData:
             overview, admission, campus, money, academic, student = dict(), dict(), dict(), dict(), dict(), dict()
             num += 1
             print(slug)
-            # self.__set_overview(slug, overview, admission)
-            # self.__set_admission(slug, admission)
-            # self.__set_money(slug, money)
-            # self.__set_academic(slug, academic)
-            # self.__set_campus(slug, campus)
+            self.__set_overview(slug, overview, admission)
+            self.__set_admission(slug, admission)
+            self.__set_money(slug, money)
+            self.__set_academic(slug, academic)
+            self.__set_campus(slug, campus)
             self.__set_student(slug, student)
             school.update({
                 slug: {
@@ -75,12 +75,9 @@ class CollegeData:
 
         end = time.time()
 
-        print("++++++++ API Total ++++++++")
+        print("++++++++ College Data Total ++++++++")
         print(end - start)
-        print("+++++++++++++++++++++++++++")
-
-        with open("obj/schools.pkl", "wb") as f:
-            pickle.dump(school, f, pickle.HIGHEST_PROTOCOL)
+        print("++++++++++++++++++++++++++++++++++++")
 
         return school
 

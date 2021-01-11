@@ -27,13 +27,26 @@ def set_format(children_data, campus):
                 for subject in data["data"]:
                     label = subject["label"]
 
-                    w, w_s, m, m_s = format_keys(label)
+                    title = format_keys(label)
+                    w, w_s, m, m_s = get_keys(title)
 
                     campus.update({
                         w: 1 if subject["values"][0] == "check" else 0,
                         w_s: 1 if subject["values"][1] == "dollar" else 0,
                         m: 1 if subject["values"][2] == "check" else 0,
                         m_s: 1 if subject["values"][3] == "dollar" else 0
+                    })
+            elif len(data["valueTitles"]) == 2:
+                for subject in data["data"]:
+                    label = subject["label"]
+
+                    title = format_keys(label)
+                    w = f"has_w_{title}_club"
+                    m = f"has_m_{title}_club"
+
+                    campus.update({
+                        w: 1 if subject["values"][0] == "check" else 0,
+                        m: 1 if subject["values"][1] == "check" else 0
                     })
 
 
@@ -84,10 +97,13 @@ def format_keys(subject):
         subject_string = "wpolo"
     else:
         subject_string = "wrestling"
+    return subject_string
 
-    w = f"has_w_{subject_string}"
-    w_s = f"has_w_{subject_string}_scho"
-    m = f"has_m_{subject_string}"
-    m_s = f"has_m_{subject_string}_scho"
+
+def get_keys(title):
+    w = f"has_w_{title}"
+    w_s = f"has_w_{title}_scho"
+    m = f"has_m_{title}"
+    m_s = f"has_m_{title}_scho"
 
     return w, w_s, m, m_s

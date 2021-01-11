@@ -1,7 +1,10 @@
 from CollegeData import CollegeData
 from database import *
+from tqdm import tqdm
 import file
 import time
+import translation
+import json
 
 
 def init_db(args=None):
@@ -25,19 +28,24 @@ def init_data(school_id, data):
 
 def insert_data(data, args=None):
     init_db(args)
-    for slug, school in data.items():
-        school_id = insert("schools", school["overview"])
-        init_data(school_id, school)
 
-        if args is None:
-            insert("admissions", init_data(school_id, school["admissions"]))
-            insert("academics", init_data(school_id, school["academics"]))
-            insert("campus", init_data(school_id, school["campus"]))
-            insert("moneys", init_data(school_id, school["moneys"]))
-            insert("students", init_data(school_id, school["students"]))
-        else:
-            for arg in args:
-                insert(arg, init_data(school_id, school[arg]))
+    with tqdm(total=len(data)) as bar:
+        for slug, school in data.items():
+            school_id = insert("schools", school["overview"])
+
+            init_data(school_id, school)
+
+            if args is None:
+                insert("admissions", init_data(school_id, school["admissions"]))
+                insert("academics", init_data(school_id, school["academics"]))
+                insert("campus", init_data(school_id, school["campus"]))
+                insert("moneys", init_data(school_id, school["moneys"]))
+                insert("students", init_data(school_id, school["students"]))
+            else:
+                for arg in args:
+                    insert(arg, init_data(school_id, school[arg]))
+
+            bar.update(1)
 
 
 try:
@@ -51,7 +59,11 @@ try:
         schools = college.get_total_school_data()
         file.store(schools)
     else:
-        schools = file.read()
+        schools = file.read("trans-schools")
+
+    if "translate" in input_string:
+        trans_schools = translation.translate_school(schools)
+        file.store(schools, "trans-schools")
 
     if "insert" in input_string:
         tables = ["admissions", "academics", "campus", "moneys", "students"]
@@ -61,7 +73,7 @@ try:
         else:
             insert_data(schools)
     else:
-        print(schools)
+        print(schools[0])
 
     end = time.time()
     print("+++++++++++++ Total +++++++++++++")

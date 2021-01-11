@@ -33,3 +33,14 @@ def insert(table, data):
 def init(table):
     with connection.cursor() as cursor:
         cursor.execute(f"TRUNCATE TABLE {table}")
+
+
+def select(table):
+    try:
+        sql = f"SELECT * FROM {table}"
+
+        with connection.cursor() as cursor:
+            cursor.execute(sql)
+            return cursor.fetchall()
+    except pymysql.DataError as e:
+        logging.critical(e.args[1])

@@ -1,4 +1,5 @@
 from bs4 import BeautifulSoup
+from tqdm import tqdm
 from admission import *
 from money import *
 from academic import *
@@ -7,7 +8,6 @@ from student import *
 import requests
 import json
 import time
-import pickle
 
 
 def get_build_id():
@@ -52,26 +52,28 @@ class CollegeData:
         num = 1
         start = time.time()
 
-        for slug in self.slugs:
-            overview, admission, campus, money, academic, student = dict(), dict(), dict(), dict(), dict(), dict()
-            num += 1
-            print(slug)
-            self.__set_overview(slug, overview, admission)
-            self.__set_admission(slug, admission)
-            self.__set_money(slug, money)
-            self.__set_academic(slug, academic)
-            self.__set_campus(slug, campus)
-            self.__set_student(slug, student)
-            school.update({
-                slug: {
-                    "overview": overview,
-                    "admissions": admission,
-                    "moneys": money,
-                    "academics": academic,
-                    "campus": campus,
-                    "students": student
-                }
-            })
+        with tqdm(total=len(self.slugs)) as bar:
+
+            for slug in self.slugs:
+                overview, admission, campus, money, academic, student = dict(), dict(), dict(), dict(), dict(), dict()
+                num += 1
+                self.__set_overview(slug, overview, admission)
+                self.__set_admission(slug, admission)
+                self.__set_money(slug, money)
+                self.__set_academic(slug, academic)
+                self.__set_campus(slug, campus)
+                self.__set_student(slug, student)
+                school.update({
+                    slug: {
+                        "overview": overview,
+                        "admissions": admission,
+                        "moneys": money,
+                        "academics": academic,
+                        "campus": campus,
+                        "students": student
+                    }
+                })
+                bar.update(1)
 
         end = time.time()
 
@@ -99,8 +101,6 @@ class CollegeData:
 
     def __set_admission(self, slug, admission):
         link = f"https://www.collegedata.com/_next/data/{self.build_id}/college-search/{slug}/admission.json"
-        print("---- Admission -----")
-        print(link)
         res = requests.get(link)
         profile = json.loads(res.text)["pageProps"]["profile"]
 
@@ -119,8 +119,6 @@ class CollegeData:
 
     def __set_money(self, slug, money):
         link = f"https://www.collegedata.com/_next/data/{self.build_id}/college-search/{slug}/money-matters.json"
-        print("---- Financial ----")
-        print(link)
         res = requests.get(link)
         profile = json.loads(res.text)["pageProps"]["profile"]
 
@@ -139,8 +137,6 @@ class CollegeData:
 
     def __set_academic(self, slug, academic):
         link = f"https://www.collegedata.com/_next/data/{self.build_id}/college-search/{slug}/academics.json"
-        print("---- Academic ----")
-        print(link)
         res = requests.get(link)
         profile = json.loads(res.text)["pageProps"]["profile"]
 
@@ -167,8 +163,6 @@ class CollegeData:
 
     def __set_campus(self, slug, campus):
         link = f"https://www.collegedata.com/_next/data/{self.build_id}/college-search/{slug}/campus-life.json"
-        print("---- Campus ----")
-        print(link)
         res = requests.get(link)
         profile = json.loads(res.text)["pageProps"]["profile"]
 
@@ -189,8 +183,6 @@ class CollegeData:
 
     def __set_student(self, slug, student):
         link = f"https://www.collegedata.com/_next/data/{self.build_id}/college-search/{slug}/students.json"
-        print("---- Student ----")
-        print(link)
         res = requests.get(link)
         profile = json.loads(res.text)["pageProps"]["profile"]
 

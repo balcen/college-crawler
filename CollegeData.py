@@ -53,7 +53,6 @@ class CollegeData:
         start = time.time()
 
         with tqdm(total=len(self.slugs)) as bar:
-
             for slug in self.slugs:
                 overview, admission, campus, money, academic, student = dict(), dict(), dict(), dict(), dict(), dict()
                 num += 1
@@ -74,7 +73,6 @@ class CollegeData:
                     }
                 })
                 bar.update(1)
-
         end = time.time()
 
         print("++++++++ College Data Total ++++++++")
@@ -86,113 +84,119 @@ class CollegeData:
     def __set_overview(self, slug, overview, admission):
         link = f"https://www.collegedata.com/_next/data/{self.build_id}/college-search/{slug}.json"
         res = requests.get(link)
-        profile = json.loads(res.text)["pageProps"]["profile"]
-        entrance_difficulty = profile["bodyContent"][0]["data"]["children"][0]["data"]["value"][0]
+        if "profile" in json.loads(res.text)["pageProps"]:
+            profile = json.loads(res.text)["pageProps"]["profile"]
+            entrance_difficulty = profile["bodyContent"][0]["data"]["children"][0]["data"]["value"][0]
 
-        overview.update({
-            "name": profile["name"],
-            "website": profile["website"],
-            "overview": profile["description"]
-        })
+            overview.update({
+                "name": profile["name"],
+                "website": profile["website"],
+                "overview": profile["description"]
+            })
 
-        admission.update({
-            "entrance_difficulty": entrance_difficulty
-        })
+            admission.update({
+                "entrance_difficulty": entrance_difficulty
+            })
 
     def __set_admission(self, slug, admission):
         link = f"https://www.collegedata.com/_next/data/{self.build_id}/college-search/{slug}/admission.json"
         res = requests.get(link)
-        profile = json.loads(res.text)["pageProps"]["profile"]
+        if "profile" in json.loads(res.text)["pageProps"]:
+            profile = json.loads(res.text)["pageProps"]["profile"]
 
-        for el in profile["bodyContent"]:
-            data = el["data"]
-            title = data["title"]
+            for el in profile["bodyContent"]:
+                data = el["data"]
+                title = data["title"]
 
-            if "Freshman" in title:
-                freshman_admission_reqs.set_format(data["children"], admission)
-            elif "Applying" in title:
-                applying_for_admission.set_format(data["children"], admission)
-            elif "Selection" in title:
-                selection_of_student.set_format(data["children"], admission)
-            else:
-                profile_of_fall_admission.set_format(data["children"], admission)
+                if "Freshman" in title:
+                    freshman_admission_reqs.set_format(data["children"], admission)
+                elif "Applying" in title:
+                    applying_for_admission.set_format(data["children"], admission)
+                elif "Selection" in title:
+                    selection_of_student.set_format(data["children"], admission)
+                else:
+                    profile_of_fall_admission.set_format(data["children"], admission)
 
     def __set_money(self, slug, money):
         link = f"https://www.collegedata.com/_next/data/{self.build_id}/college-search/{slug}/money-matters.json"
         res = requests.get(link)
-        profile = json.loads(res.text)["pageProps"]["profile"]
+        if "profile" in json.loads(res.text)["pageProps"]:
+            profile = json.loads(res.text)["pageProps"]["profile"]
 
-        tuition_and_expenses.set_format(profile, money)
+            tuition_and_expenses.set_format(profile, money)
 
-        for content in profile["bodyContent"]:
-            data = content["data"]
-            title = data["title"]
+            for content in profile["bodyContent"]:
+                data = content["data"]
+                title = data["title"]
 
-            if "Applying" in title:
-                applying_for_financial_aid.set_format(data["children"], money)
-            elif "Profile" in title:
-                profile_of_financial_aid.set_format(data["children"], money)
-            elif "Financial" in title:
-                financial_aid_programs.set_format(data["children"], money)
+                if "Applying" in title:
+                    applying_for_financial_aid.set_format(data["children"], money)
+                elif "Profile" in title:
+                    profile_of_financial_aid.set_format(data["children"], money)
+                elif "Financial" in title:
+                    financial_aid_programs.set_format(data["children"], money)
 
     def __set_academic(self, slug, academic):
         link = f"https://www.collegedata.com/_next/data/{self.build_id}/college-search/{slug}/academics.json"
         res = requests.get(link)
-        profile = json.loads(res.text)["pageProps"]["profile"]
+        if "profile" in json.loads(res.text)["pageProps"]:
+            profile = json.loads(res.text)["pageProps"]["profile"]
 
-        general_information.set_format(profile, academic)
+            general_information.set_format(profile, academic)
 
-        for content in profile["bodyContent"]:
-            data = content["data"]
-            title = data["title"]
+            for content in profile["bodyContent"]:
+                data = content["data"]
+                title = data["title"]
 
-            if "Undergraduate" in title:
-                undergraduate_education.set_format(data["children"], academic)
-            elif "Curriculum" in title:
-                curriculum_and_graduation_requirements.set_format(data["children"], academic)
-            elif "Faculty" in title:
-                faculty_and_instruction.set_format(data["children"], academic)
-            elif "Advanced" in title:
-                advanced_placement.set_format(data["children"], academic)
-            elif "Academic Resources" in title:
-                academic_resources.set_format(data["children"], academic)
-            elif "Academic Support Services" in title:
-                academic_support_services.set_format(data["children"], academic)
-            elif "Graduate/Professional" in title:
-                school_education.set_format(data["children"], academic)
+                if "Undergraduate" in title:
+                    undergraduate_education.set_format(data["children"], academic)
+                elif "Curriculum" in title:
+                    curriculum_and_graduation_requirements.set_format(data["children"], academic)
+                elif "Faculty" in title:
+                    faculty_and_instruction.set_format(data["children"], academic)
+                elif "Advanced" in title:
+                    advanced_placement.set_format(data["children"], academic)
+                elif "Academic Resources" in title:
+                    academic_resources.set_format(data["children"], academic)
+                elif "Academic Support Services" in title:
+                    academic_support_services.set_format(data["children"], academic)
+                elif "Graduate/Professional" in title:
+                    school_education.set_format(data["children"], academic)
 
     def __set_campus(self, slug, campus):
         link = f"https://www.collegedata.com/_next/data/{self.build_id}/college-search/{slug}/campus-life.json"
         res = requests.get(link)
-        profile = json.loads(res.text)["pageProps"]["profile"]
+        if "profile" in json.loads(res.text)["pageProps"]:
+            profile = json.loads(res.text)["pageProps"]["profile"]
 
-        for content in profile["bodyContent"]:
-            data = content["data"]
-            title = data["title"]
+            for content in profile["bodyContent"]:
+                data = content["data"]
+                title = data["title"]
 
-            if title == "Location and Setting":
-                location_and_setting.set_format(data["children"], campus)
-            elif title == "Housing":
-                housing.set_format(data["children"], campus)
-            elif title == "Security":
-                security.set_format(data["children"], campus)
-            elif title == "Personal Support Services":
-                personal_support_services.set_format(data["children"], campus)
-            elif title == "Sports & Recreation":
-                sports_and_recreation.set_format(data["children"], campus)
+                if title == "Location and Setting":
+                    location_and_setting.set_format(data["children"], campus)
+                elif title == "Housing":
+                    housing.set_format(data["children"], campus)
+                elif title == "Security":
+                    security.set_format(data["children"], campus)
+                elif title == "Personal Support Services":
+                    personal_support_services.set_format(data["children"], campus)
+                elif title == "Sports & Recreation":
+                    sports_and_recreation.set_format(data["children"], campus)
 
     def __set_student(self, slug, student):
         link = f"https://www.collegedata.com/_next/data/{self.build_id}/college-search/{slug}/students.json"
         res = requests.get(link)
-        profile = json.loads(res.text)["pageProps"]["profile"]
+        if "profile" in json.loads(res.text)["pageProps"]:
+            profile = json.loads(res.text)["pageProps"]["profile"]
 
-        for content in profile["bodyContent"]:
-            data = content["data"]
-            title = data["title"]
+            for content in profile["bodyContent"]:
+                data = content["data"]
+                title = data["title"]
 
-            if title == "Student Body":
-                student_body.set_format(data["children"], student)
-            elif "Undergraduate Retention" in title:
-                undergraduate_retention_and_graduation.set_format(data["children"], student)
-            elif "After Graduation":
-                after_graduation.set_format(data["children"], student)
+                if title == "Student Body":
+                    student_body.set_format(data["children"], student)
+                elif "Undergraduate Retention" in title:
+                    undergraduate_retention_and_graduation.set_format(data["children"], student)
+                elif "After Graduation":
+                    after_graduation.set_format(data["children"], student)

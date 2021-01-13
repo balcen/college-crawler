@@ -4,7 +4,7 @@ from tqdm import tqdm
 import file
 import time
 import translation
-import json
+from rich.console import Console
 
 
 def init_db(args=None):
@@ -61,10 +61,6 @@ try:
     else:
         schools = file.read("trans-schools")
 
-    if "translate" in input_string:
-        trans_schools = translation.translate_school(schools)
-        file.store(schools, "trans-schools")
-
     if "insert" in input_string:
         tables = ["admissions", "academics", "campus", "moneys", "students"]
         if any(v in input_string for v in tables):
@@ -79,5 +75,9 @@ try:
     print("+++++++++++++ Total +++++++++++++")
     print(end - start)
     print("+++++++++++++++++++++++++++++++++")
+except Exception as e:
+    console = Console()
+    console.print(repr(e), style="bold red")
 finally:
     connection.close()
+

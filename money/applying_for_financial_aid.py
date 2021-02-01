@@ -23,7 +23,10 @@ def set_format(apply_data, money):
                 money.update({
                     "finaid_net_price_calc_website": data["link"]
                 })
-            elif title == "Application Deadline":
+        elif apply_type == "TitleValue":
+            title = data["title"]
+
+            if title == "Application Deadline":
                 money.update({
                     "finaid_app_priority_deadline": convert_string_to_date(data["value"][0])
                 })
@@ -40,27 +43,30 @@ def set_format(apply_data, money):
                     "finaid_methodology": data["value"][0]
                 })
         elif apply_type == "LabeledTable":
-            for label in data["data"]:
-                if "FAFSA" in label["label"]:
-                    code_pattern = r"(?<=Codeis)[0-9]+"
-                    if re.search(code_pattern, label["label"]) is not None:
-                        code = re.search(code_pattern, label["label"].replace(" ", "")).group()
+            title = data["keyTitle"]
+
+            if title == "Forms Required":
+                for label_data in data["data"]:
+                    if "FAFSA" in label_data["label"]:
+                        code_pattern = r"(?<=Codeis)[0-9]+"
+                        if re.search(code_pattern, label_data["label"].replace(" ", "")) is not None:
+                            code = re.search(code_pattern, label_data["label"].replace(" ", "")).group()
+                            money.update({
+                                "finaid_fafsa_code": code,
+                                "finaid_fafsa_cost": label_data["values"][0]
+                            })
+                    elif "CSS" in label_data["label"]:
                         money.update({
-                            "finaid_fafsa_code": code,
-                            "finaid_fafsa_cost": label["values"][0]
+                            "finaid_css_cost": label_data["values"][0]
                         })
-                elif "CSS" in label["label"]:
-                    money.update({
-                        "finaid_css_cost": label["values"][0]
-                    })
-                elif "Farm" in label["label"]:
-                    money.update({
-                        "finaid_business_farm_supplement": label["values"][0]
-                    })
-                elif "Noncustodial" in label["label"]:
-                    money.update({
-                        "finaid_noncustodial_statement": label["values"][0]
-                    })
+                    elif "Farm" in label_data["label"]:
+                        money.update({
+                            "finaid_business_farm_supplement": label_data["values"][0]
+                        })
+                    elif "Noncustodial" in label_data["label"]:
+                        money.update({
+                            "finaid_noncustodial_statement": label_data["values"][0]
+                        })
 
 
 def convert_string_to_date(string):

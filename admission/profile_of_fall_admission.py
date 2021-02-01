@@ -58,9 +58,9 @@ def set_format(fall_datas, admission):
                         admission.update({
                             "enrolled_m_count": pn,
                             "yield_pct_m": p,
-                            "admitted_w_count": n
+                            "admitted_m_count": n
                         })
-        elif title == "Student Offered Wait List":
+        elif title == "Students Offered Wait List":
             admission.update({
                 "waitlist_offered_count": int(data["value"][0].replace(",", ""))
             })
@@ -111,27 +111,27 @@ def set_format(fall_datas, admission):
                 for level in data["data"]:
                     label = level["label"]
 
-                    if "700" in label:
+                    if "700 - 800" in label:
                         admission.update({
                             "sat_math700_pct": level["value"]
                         })
-                    elif "600" in label:
+                    elif "600 - 700" in label:
                         admission.update({
                             "sat_math600_pct": level["value"]
                         })
-                    elif "500" in label:
+                    elif "500 - 600" in label:
                         admission.update({
                             "sat_math500_pct": level["value"]
                         })
-                    elif "400" in label:
+                    elif "400 - 500" in label:
                         admission.update({
                             "sat_math400_pct": level["value"]
                         })
-                    elif "300" in label:
+                    elif "300 - 400" in label:
                         admission.update({
                             "sat_math300_pct": level["value"]
                         })
-                    else:
+                    elif "200 - 300" in label:
                         admission.update({
                             "sat_math200_pct": level["value"]
                         })
@@ -147,27 +147,27 @@ def set_format(fall_datas, admission):
                 for level in data["data"]:
                     label = level["label"]
 
-                    if "700" in label:
+                    if "700 - 800" in label:
                         admission.update({
                             "sat_english700_pct": level["value"]
                         })
-                    elif "600" in label:
+                    elif "600 - 700" in label:
                         admission.update({
                             "sat_english600_pct": level["value"]
                         })
-                    elif "500" in label:
+                    elif "500 - 600" in label:
                         admission.update({
                             "sat_english500_pct": level["value"]
                         })
-                    elif "400" in label:
+                    elif "400 - 500" in label:
                         admission.update({
                             "sat_english400_pct": level["value"]
                         })
-                    elif "300" in label:
+                    elif "300 - 400" in label:
                         admission.update({
                             "sat_english300_pct": level["value"]
                         })
-                    else:
+                    elif "200 - 300" in label:
                         admission.update({
                             "sat_english200_pct": level["value"]
                         })

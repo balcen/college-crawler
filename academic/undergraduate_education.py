@@ -14,7 +14,7 @@ def set_format(children_data, academic):
                 academic.update({
                     "la_pd_programs": data["value"][0]
                 })
-            elif title == "Special Program":
+            elif title == "Special Programs":
                 academic.update({
                     "special_programs": ", ".join(data["value"])
                 })

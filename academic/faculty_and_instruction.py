@@ -6,7 +6,7 @@ def set_format(children_data, academic):
         if child_type == "TitleValue":
             title = data["title"]
 
-            if title == "Full-time Faculty":
+            if title == "Full-Time Faculty":
                 if "Not" not in data["value"][0]:
                     academic.update({
                         "fulltime_faculty_count": int(data["value"][0].replace(",", ""))
@@ -76,7 +76,7 @@ def set_format(children_data, academic):
                         academic.update({
                             "section_size_49_pct": el["value"]
                         })
-                    elif "50-99" in el["label"]:
+                    elif "50-59" in el["label"]:
                         academic.update({
                             "section_size_99_pct": el["value"]
                         })

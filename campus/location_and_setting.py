@@ -30,7 +30,7 @@ def set_format(children_data, campus):
                     campus.update({
                         "temp_low": float(data["value"][0][:-1])
                     })
-            elif title == "Avg Hgigh In Sep":
+            elif title == "Avg High In Sep":
                 if "Not" not in data["value"][0]:
                     campus.update({
                         "temp_high": float(data["value"][0][:-1])
@@ -46,7 +46,7 @@ def set_format(children_data, campus):
                     campus.update({
                         "nearest_bus_dist_mi": get_miles(data["value"][0])
                     })
-            elif title == "Nearest Tran Station":
+            elif title == "Nearest Train Station":
                 if "Not" not in data["value"][0]:
                     campus.update({
                         "nearest_tran_dist_mi": get_miles(data["value"][0])

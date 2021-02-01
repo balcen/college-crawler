@@ -4,19 +4,19 @@ def set_format(children_data, student):
         data = child_data["data"]
 
         if child_type == "TitleValue":
-            title = data["value"]
+            title = data["title"]
 
-            if "Graduates Offered Full-Time" in title:
+            if title == "Graduates Offered Full-Time Employment Within 6 Months":
                 if "Not" not in data["value"][0]:
                     student.update({
                         "employment_pct": int(data["value"][0].replace("%", ""))
                     })
-            elif "Graduates Pursuing Advanced" in title:
+            elif title == "Graduates Pursuing Advanced Study Directly":
                 if "Not" not in data["value"][0]:
                     student.update({
-                        "pursue_grad_studies_pct": float(data["value"][0].replace(",", ""))
+                        "pursue_grad_studies_pct": float(data["value"][0].replace(",", "").replace("%", ""))
                     })
-            elif "Disciplines Pursued":
+            elif title == "Disciplines Pursued":
                 if "Not" not in data["value"][0]:
                     student.update({
                         "grad_disciplines_pursued": data["value"][0]

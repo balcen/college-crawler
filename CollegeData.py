@@ -53,9 +53,11 @@ class CollegeData:
         num = 1
         start = time.time()
 
-        try:
-            with tqdm(total=len(self.slugs)) as bar:
-                for slug in self.slugs:
+        with tqdm(total=len(self.slugs)) as bar:
+            i = 0
+            while i < len(self.slugs):
+                slug = self.slugs[i]
+                try:
                     # print(slug)
                     overview, admission, campus, money, academic, student = dict(), dict(), dict(), dict(), dict(), dict()
                     num += 1
@@ -75,9 +77,10 @@ class CollegeData:
                             "students": student
                         }
                     })
+                    i += 1
                     bar.update(1)
-        except ValueError:
-            print("Decoding JSON has failed")
+                except ValueError:
+                    continue
 
         end = time.time()
         print("++++++++ College Data Total ++++++++")

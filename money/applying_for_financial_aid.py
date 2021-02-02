@@ -53,7 +53,7 @@ def set_format(apply_data, money):
                             code = re.search(code_pattern, label_data["label"].replace(" ", "")).group()
                             money.update({
                                 "finaid_fafsa_code": code,
-                                "finaid_fafsa_cost": label_data["values"][0]
+                                "finaid_fafsa_cost": 0 if "Free" in label_data["values"][0] else label_data["values"][0]
                             })
                     elif "CSS" in label_data["label"]:
                         money.update({

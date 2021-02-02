@@ -60,7 +60,7 @@ def convert_selection(selection):
     elif selection == "Relation with Alumnus":
         return "impt_alumnus_relationship"
     elif selection == "Religious Affiliation/Commitment":
-        return "impt_region"
+        return "impt_religion"
     elif selection == "Ethnicity":
         return "impt_ethnicity"
     elif selection == "Work Experience":

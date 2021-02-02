@@ -2,11 +2,11 @@ import re
 
 
 def set_format(profile_data, money):
+    toggle = "freshman"
     for datum in profile_data:
         profile_type = datum["type"]
         data = datum["data"]
 
-        toggle = "freshman"
         if data.get("value", "") == "All Undergraduates":
             toggle = "undergraduates"
 
@@ -20,7 +20,7 @@ def set_format(profile_data, money):
                         "finaid_freshmen_applicant_count": count,
                         "finaid_freshmen_applicant_pct": per
                     })
-                else:
+                elif toggle == "undergraduates":
                     money.update({
                         "finaid_undergrad_applicant_count": count,
                         "finaid_undergrad_applicant_pct": per
@@ -32,7 +32,7 @@ def set_format(profile_data, money):
                         "finaid_freshmen_needed_count": count,
                         "finaid_freshmen_needed_pct":per
                     })
-                else:
+                elif toggle == "undergraduates":
                     money.update({
                         "finaid_undergrad_needed_count": count,
                         "finaid_undergrad_needed_pct": per
@@ -44,7 +44,7 @@ def set_format(profile_data, money):
                         "finaid_freshmen_received_count": count,
                         "finaid_freshmen_received_pct": per
                     })
-                else:
+                elif toggle == "undergraduates":
                     money.update({
                         "finaid_undergrad_received_count": count,
                         "finaid_undergrad_received_pct": per
@@ -56,7 +56,7 @@ def set_format(profile_data, money):
                         "finaid_freshmen_fully_met_count": count,
                         "finaid_freshmen_fully_met_pct": per
                     })
-                else:
+                elif toggle == "undergraduates":
                     money.update({
                         "finaid_undergrad_fully_met_count": count,
                         "finaid_undergrad_fully_met_pct": per
@@ -67,7 +67,7 @@ def set_format(profile_data, money):
                     money.update({
                         "finaid_freshmen_avg_pct_met": per
                     })
-                else:
+                elif toggle == "undergraduates":
                     money.update({
                         "finaid_undergrad_avg_pct_met": per
                     })
@@ -81,23 +81,39 @@ def set_format(profile_data, money):
                 count_pattern = r"(?<!\$)[0-9]+"
                 if re.search(count_pattern, string) is not None:
                     count = int(re.search(count_pattern, string).group())
-                    money.update({
-                        "finaid_freshman_merit_received_count": count,
-                    })
-
+                    if toggle == "freshman":
+                        money.update({
+                            "finaid_freshman_merit_received_count": count,
+                        })
+                    elif toggle == "undergraduates":
+                        print('count')
+                        money.update({
+                            "finaid_undergrad_merit_received_count": count,
+                        })
                 percentage_pattern = r"[0-9.]+(?=\%)"
                 if re.search(percentage_pattern, string) is not None:
                     percentage = float(re.search(percentage_pattern, string).group())
-                    money.update({
-                        "finaid_freshman_merit_received_pct": percentage,
-                    })
-
+                    if toggle == "freshman":
+                        money.update({
+                            "finaid_freshman_merit_received_pct": percentage,
+                        })
+                    elif toggle == "undergraduates":
+                        print('per')
+                        money.update({
+                            "finaid_undergrad_merit_received_pct": percentage,
+                        })
                 price_pattern = r"(?<=\$)[0-9,]+"
                 if re.search(price_pattern, string) is not None:
                     price = int(re.search(price_pattern, string).group().replace(",", ""))
-                    money.update({
-                        "finaid_freshman_merit_received_avg": price,
-                    })
+                    if toggle == "freshman":
+                        money.update({
+                            "finaid_freshman_merit_received_avg": price,
+                        })
+                    elif toggle == "undergraduates":
+                        print('p')
+                        money.update({
+                            "finaid_undergrad_merit_received_avg": price,
+                        })
         elif profile_type == "NestedTitleValue":
             top_title_value = data["topTitleValue"]
             if top_title_value["title"] == "Average Award":
@@ -106,31 +122,11 @@ def set_format(profile_data, money):
                         money.update({
                             "finaid_freshmen_avg_award": int(top_title_value["value"][0].replace(",", "").replace("$", ""))
                         })
-                    else:
+                    elif toggle == "undergraduates":
                         money.update({
                             "finaid_undergrad_avg_award": int(
                                 top_title_value["value"][0].replace(",", "").replace("$", ""))
                         })
-            #
-            #     print(next((item for item in data["children"] if item["title"] == "Merit-Based Gift"), None))
-            #     if next((item for item in data["children"] if item["title"] == "Merit-Based Gift"), None) is not None:
-            #         el = next(item for item in data["children"] if item["title"])
-            #         try:
-            #             string = el["value"][1]
-            #             count_pattern = r"(?<!\$)[0-9]+"
-            #             count = int(re.search(count_pattern, string).group())
-            #             percentage_pattern = r"[0-9.]+(?=\%)"
-            #             percentage = float(re.search(percentage_pattern, string).group())
-            #             price_pattern = r"(?<=\$)[0-9,]+"
-            #             price = int(re.search(price_pattern, string).group().replace(",", ""))
-            #
-            #             money.update({
-            #                 "finaid_freshman_merit_received_count": count,
-            #                 "finaid_freshman_merit_received_pct": percentage,
-            #                 "finaid_freshman_merit_received_avg": price
-            #             })
-            #         except IndexError:
-            #             pass
             elif "Average Indebtedness of" in top_title_value["title"]:
                 if "$" in top_title_value["value"][0]:
                     money.update({

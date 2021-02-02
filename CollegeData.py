@@ -53,30 +53,33 @@ class CollegeData:
         num = 1
         start = time.time()
 
-        with tqdm(total=len(self.slugs)) as bar:
-            for slug in self.slugs:
-                # print(slug)
-                overview, admission, campus, money, academic, student = dict(), dict(), dict(), dict(), dict(), dict()
-                num += 1
-                self.__set_overview(slug, overview, admission)
-                self.__set_admission(slug, admission)
-                self.__set_money(slug, money)
-                self.__set_academic(slug, academic)
-                self.__set_campus(slug, campus)
-                self.__set_student(slug, student)
-                school.update({
-                    slug: {
-                        "overview": overview,
-                        "admissions": admission,
-                        "moneys": money,
-                        "academics": academic,
-                        "campus": campus,
-                        "students": student
-                    }
-                })
-                bar.update(1)
-        end = time.time()
+        try:
+            with tqdm(total=len(self.slugs)) as bar:
+                for slug in self.slugs:
+                    # print(slug)
+                    overview, admission, campus, money, academic, student = dict(), dict(), dict(), dict(), dict(), dict()
+                    num += 1
+                    self.__set_overview(slug, overview, admission)
+                    self.__set_admission(slug, admission)
+                    self.__set_money(slug, money)
+                    self.__set_academic(slug, academic)
+                    self.__set_campus(slug, campus)
+                    self.__set_student(slug, student)
+                    school.update({
+                        slug: {
+                            "overview": overview,
+                            "admissions": admission,
+                            "moneys": money,
+                            "academics": academic,
+                            "campus": campus,
+                            "students": student
+                        }
+                    })
+                    bar.update(1)
+        except ValueError:
+            print("Decoding JSON has failed")
 
+        end = time.time()
         print("++++++++ College Data Total ++++++++")
         print(end - start)
         print("++++++++++++++++++++++++++++++++++++")
@@ -87,7 +90,7 @@ class CollegeData:
         # print(f"{slug} overview")
         link = f"https://www.collegedata.com/_next/data/{self.build_id}/college-search/{slug}.json"
         res = requests.get(link)
-        if "profile" in json.loads(res.text)["pageProps"]:
+        if res.text and "profile" in json.loads(res.text)["pageProps"]:
             profile = json.loads(res.text)["pageProps"]["profile"]
             entrance_difficulty = profile["bodyContent"][0]["data"]["children"][0]["data"]["value"][0]
 
@@ -108,7 +111,7 @@ class CollegeData:
         # print(f"{slug} admission")
         link = f"https://www.collegedata.com/_next/data/{self.build_id}/college-search/{slug}/admission.json"
         res = requests.get(link)
-        if "profile" in json.loads(res.text)["pageProps"]:
+        if res.text and "profile" in json.loads(res.text)["pageProps"]:
             profile = json.loads(res.text)["pageProps"]["profile"]
 
             for el in profile["bodyContent"]:
@@ -131,7 +134,7 @@ class CollegeData:
         # print(f"{slug} money")
         link = f"https://www.collegedata.com/_next/data/{self.build_id}/college-search/{slug}/money-matters.json"
         res = requests.get(link)
-        if "profile" in json.loads(res.text)["pageProps"]:
+        if res.text and "profile" in json.loads(res.text)["pageProps"]:
             profile = json.loads(res.text)["pageProps"]["profile"]
 
             tuition_and_expenses.set_format(profile, money)
@@ -154,7 +157,7 @@ class CollegeData:
         # print(f"{slug} academic")
         link = f"https://www.collegedata.com/_next/data/{self.build_id}/college-search/{slug}/academics.json"
         res = requests.get(link)
-        if "profile" in json.loads(res.text)["pageProps"]:
+        if res.text and "profile" in json.loads(res.text)["pageProps"]:
             profile = json.loads(res.text)["pageProps"]["profile"]
 
             general_information.set_format(profile, academic)
@@ -185,7 +188,7 @@ class CollegeData:
         # print(f"{slug} campus")
         link = f"https://www.collegedata.com/_next/data/{self.build_id}/college-search/{slug}/campus-life.json"
         res = requests.get(link)
-        if "profile" in json.loads(res.text)["pageProps"]:
+        if res.text and "profile" in json.loads(res.text)["pageProps"]:
             profile = json.loads(res.text)["pageProps"]["profile"]
 
             for content in profile["bodyContent"]:
@@ -210,7 +213,7 @@ class CollegeData:
         # print(f"{slug} student")
         link = f"https://www.collegedata.com/_next/data/{self.build_id}/college-search/{slug}/students.json"
         res = requests.get(link)
-        if "profile" in json.loads(res.text)["pageProps"]:
+        if res.text and "profile" in json.loads(res.text)["pageProps"]:
             profile = json.loads(res.text)["pageProps"]["profile"]
 
             for content in profile["bodyContent"]:

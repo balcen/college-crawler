@@ -49,7 +49,7 @@ def set_format(children_data, campus):
             elif title == "Nearest Train Station":
                 if "Not" not in data["value"][0]:
                     campus.update({
-                        "nearest_tran_dist_mi": get_miles(data["value"][0])
+                        "nearest_train_dist_mi": get_miles(data["value"][0])
                     })
 
         elif child_type == "TitleLink":

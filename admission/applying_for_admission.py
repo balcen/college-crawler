@@ -10,8 +10,17 @@ def set_format(apply_datas, admission):
                 "ao_address": data["value"][0],
                 "ao_city": data["value"][1],
                 "ao_state": data["value"][2],
-                "ao_zipcode1": data["value"][3]
             })
+            if "-" in data["value"][3]:
+                zipcode = data["value"][3].split("-")
+                admission.update({
+                    "ao_zipcode1": zipcode[0],
+                    "ao_zipcode2": zipcode[1]
+                })
+            else:
+                admission.update({
+                    "ao_zipcode": data["value"][3]
+                })
         elif title == "Phone":
             admission.update({
                 "ao_phone": data["value"][0]
@@ -90,7 +99,7 @@ def set_format(apply_datas, admission):
             admission.update({
                 "college_essay_policy": data["value"][0]
             })
-        elif title == "Letter of Recommendation":
+        elif title == "Letters of Recommendation":
             admission.update({
                 "recommendation_policy": data["value"][0]
             })

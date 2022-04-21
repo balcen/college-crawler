@@ -18,7 +18,7 @@ def set_format(children_data, academic):
                 academic.update({
                     "has_disability_service": 1 if "Available" in data["value"][0] else 0
                 })
-            elif title == "Service for Physically Disabled Students":
+            elif title == "Services for Physically Disabled Students":
                 academic.update({
                     "disability_services": data["value"][0]
                 })

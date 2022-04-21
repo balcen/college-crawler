@@ -11,8 +11,9 @@ def set_format(children_data, campus):
 
             if "Population" in title:
                 if "Not" not in data["value"][0]:
+                    pattern = r"[0-9]+"
                     campus.update({
-                        "city_population": int(data["value"][0].replace(",", ""))
+                        "city_population": int(re.search(pattern, data["value"][0]).group().replace(",", ""))
                     })
             elif title == "Nearest Metropolitan Area":
                 campus.update({
@@ -20,33 +21,35 @@ def set_format(children_data, campus):
                 })
             elif title == "Campus Size":
                 if "Not" not in data["value"][0]:
+                    pattern = r"[0-9,]+"
                     campus.update({
-                        "campus_size_acre": int(data["value"][0].replace("acres", "").replace(" ", ""))
+                        "campus_size_acre": int(re.search(pattern, data["value"][0]).group().replace(",", ""))
                     })
             elif title == "Avg Low In Jan":
                 if "Not" not in data["value"][0]:
                     campus.update({
                         "temp_low": float(data["value"][0][:-1])
                     })
-            elif title == "Avg Hgigh In Sep":
+            elif title == "Avg High In Sep":
                 if "Not" not in data["value"][0]:
                     campus.update({
                         "temp_high": float(data["value"][0][:-1])
                     })
             elif title == "Rainy Days / Year":
                 if "Not" not in data["value"][0]:
+                    pattern = r"[0-9]+"
                     campus.update({
-                        "rain_days": int(data["value"][0])
+                        "rain_days": int(re.search(pattern, data["value"][0]).group())
                     })
             elif title == "Nearest Bus Station":
                 if "Not" not in data["value"][0]:
                     campus.update({
                         "nearest_bus_dist_mi": get_miles(data["value"][0])
                     })
-            elif title == "Nearest Tran Station":
+            elif title == "Nearest Train Station":
                 if "Not" not in data["value"][0]:
                     campus.update({
-                        "nearest_tran_dist_mi": get_miles(data["value"][0])
+                        "nearest_train_dist_mi": get_miles(data["value"][0])
                     })
 
         elif child_type == "TitleLink":

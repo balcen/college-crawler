@@ -1,28 +1,38 @@
-from connect import *
 from CollegeData import CollegeData
-from database import *
+from rich.console import Console
+from UsNews import UsNews
+import file
 import time
+import json
+import logging
+
 
 try:
     start = time.time()
 
-    college = CollegeData()
-    schools = college.get_total_school_data()
+    deter = input('college_data/us_news/all?')
 
-    init("schools")
-    init("admissions")
+    if deter == 'college_data' or deter == 'all':
+        college = CollegeData()
+        schools = college.get_total_school_data()
+        file.store(schools)
 
-    for slug, school in schools.items():
-        school_id = insert("schools", school["overview"])
-        school["admissions"].update({
-            "school_id": school_id
-        })
-        admissions = {k: v for k, v in school["admissions"].items() if k and k.strip()}
-        insert("admissions", admissions)
+        with open('/mnt/c/Users/baicen/Desktop/schools.json', 'w') as outfile:
+            json.dump(schools, outfile)
+        with open('obj/schools.json', 'w') as outfile:
+            json.dump(schools, outfile)
+
+    if deter == 'us_news' or deter == 'all':
+        us_news = UsNews()
+        us_news.get_data()
 
     end = time.time()
     print("+++++++++++++ Total +++++++++++++")
     print(end - start)
     print("+++++++++++++++++++++++++++++++++")
-finally:
-    connection.close()
+
+except Exception as e:
+    console = Console()
+    console.print(repr(e), style="bold red")
+    # print(repr(e))
+

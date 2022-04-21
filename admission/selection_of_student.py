@@ -1,6 +1,7 @@
-def set_format(selection_datas, admission):
-    for selection_data in selection_datas:
-        data = selection_data["data"]
+def set_format(data_children, admission):
+    for data_child in data_children:
+        child_type = data_child["type"]
+        data = data_child["data"]
         title = data["title"]
         subjects = data["data"]
 
@@ -58,7 +59,9 @@ def convert_selection(selection):
         return "impt_geography"
     elif selection == "Relation with Alumnus":
         return "impt_alumnus_relationship"
-    elif selection == "Religious Affilation/Commitment":
+    elif selection == "Religious Affiliation/Commitment":
+        return "impt_religion"
+    elif selection == "Ethnicity":
         return "impt_ethnicity"
     elif selection == "Work Experience":
         return "impt_work_experience"

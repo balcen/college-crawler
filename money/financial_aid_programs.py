@@ -24,7 +24,7 @@ def set_format(financial_data, money):
                 })
             elif title == "Non-Need-Based Available":
                 money.update({
-                    "nonneed-based_programs": data["value"][0]
+                    "nonneed_based_programs": data["value"][0]
                 })
             elif title == "Work-Study Programs":
                 money.update({
